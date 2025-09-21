@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Educational Club Management Design System */
+
+@layer base {
+  :root {
+    /* Educational Theme - Professional Blues & Greens */
+    --background: 240 10% 99%;
+    --foreground: 224 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 20% 15%;
+
+    /* Primary - University Blue */
+    --primary: 217 89% 61%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 217 89% 55%;
+
+    /* Secondary - Academic Gray */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 224 20% 15%;
+
+    /* Success - Academic Green */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning - Academic Orange */
+    --warning: 32 95% 44%;
+    --warning-foreground: 0 0% 100%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 224 12% 45%;
+
+    --accent: 217 89% 95%;
+    --accent-foreground: 217 89% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 89% 61%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217 89% 61%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 89% 61%), hsl(217 89% 70%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(220 14% 98%));
+
+    /* Shadows */
+    --shadow-soft: 0 2px 8px -2px hsl(217 89% 61% / 0.1);
+    --shadow-medium: 0 8px 25px -5px hsl(217 89% 61% / 0.15);
+    --shadow-elevated: 0 20px 40px -12px hsl(217 89% 61% / 0.25);
+
+    /* Animation */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    /* Dark Mode - Professional Night Theme */
+    --background: 224 25% 8%;
+    --foreground: 220 14% 95%;
+
+    --card: 224 25% 10%;
+    --card-foreground: 220 14% 95%;
+
+    --popover: 224 25% 10%;
+    --popover-foreground: 220 14% 95%;
+
+    --primary: 217 89% 65%;
+    --primary-foreground: 224 25% 8%;
+    --primary-hover: 217 89% 70%;
+
+    --secondary: 224 25% 15%;
+    --secondary-foreground: 220 14% 85%;
+
+    --success: 142 76% 40%;
+    --success-foreground: 224 25% 8%;
+
+    --warning: 32 95% 50%;
+    --warning-foreground: 224 25% 8%;
+
+    --muted: 224 25% 15%;
+    --muted-foreground: 220 14% 65%;
+
+    --accent: 217 89% 15%;
+    --accent-foreground: 217 89% 85%;
+
+    --destructive: 0 84% 65%;
+    --destructive-foreground: 224 25% 8%;
+
+    --border: 224 25% 20%;
+    --input: 224 25% 20%;
+    --ring: 217 89% 65%;
+
+    --sidebar-background: 224 25% 6%;
+    --sidebar-foreground: 220 14% 85%;
+    --sidebar-primary: 217 89% 65%;
+    --sidebar-primary-foreground: 224 25% 6%;
+    --sidebar-accent: 224 25% 12%;
+    --sidebar-accent-foreground: 220 14% 85%;
+    --sidebar-border: 224 25% 20%;
+    --sidebar-ring: 217 89% 65%;
+
+    /* Dark Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 89% 65%), hsl(217 89% 75%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 40%), hsl(142 76% 50%));
+    --gradient-card: linear-gradient(135deg, hsl(224 25% 10%), hsl(224 25% 12%));
+
+    /* Dark Shadows */
+    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
+    --shadow-medium: 0 8px 25px -5px hsl(0 0% 0% / 0.4);
+    --shadow-elevated: 0 20px 40px -12px hsl(0 0% 0% / 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .bg-gradient-success {
+    background: var(--gradient-success);
+  }
+  
+  .bg-gradient-card {
+    background: var(--gradient-card);
+  }
+  
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .shadow-medium {
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+}
