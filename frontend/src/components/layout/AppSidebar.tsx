@@ -48,6 +48,14 @@ const facultyNavItems = [
   { title: 'Calendar', url: '/calendar', icon: Calendar },
 ];
 
+const adminNavItems = [
+  { title: 'Dashboard', url: '/admin/dashboard', icon: BarChart3 },
+  { title: 'Faculty Management', url: '/admin/faculty', icon: Users },
+  { title: 'Club Management', url: '/admin/clubs', icon: Shield },
+  { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp },
+  { title: 'Calendar', url: '/calendar', icon: Calendar },
+];
+
 export function AppSidebar() {
   const { user } = useAuth();
   const { state } = useSidebar();
@@ -58,6 +66,7 @@ export function AppSidebar() {
       case 'student': return studentNavItems;
       case 'club-lead': return clubLeadNavItems;
       case 'faculty': return facultyNavItems;
+      case 'admin': return adminNavItems;
       default: return [];
     }
   };

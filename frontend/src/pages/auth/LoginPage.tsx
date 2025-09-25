@@ -1,49 +1,59 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { UserRole } from '@/types/auth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { School, LogIn } from 'lucide-react';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { School, LogIn } from "lucide-react";
 
 export function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('student');
-  const { login, isLoading } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login, isLoading, user } = useAuth(); // `user` should have role
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(email, password, role);
+      const loggedInUser = await login(email, password); // returns user object
       toast({
-        title: 'Login successful',
-        description: 'Welcome back!',
+        title: "Login successful",
+        description: "Welcome back!",
       });
-      
+
+      console.log("Logged in as:", loggedInUser.role);
+
       // Role-based navigation
-      switch (role) {
-        case 'student':
-          navigate('/student/clubs');
+      switch (loggedInUser.role) {
+        case "student":
+          navigate("/student/clubs");
           break;
-        case 'club-lead':
-          navigate('/club-lead/dashboard');
+        case "club-lead":
+          navigate("/club-lead/dashboard");
           break;
-        case 'faculty':
-          navigate('/faculty/dashboard');
+        case "faculty":
+          navigate("/faculty/dashboard");
           break;
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        default:
+          navigate("/"); // fallback
       }
     } catch (error) {
       toast({
-        title: 'Login failed',
-        description: 'Invalid credentials. Please try again.',
-        variant: 'destructive',
+        title: "Login failed",
+        description: "Invalid credentials. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -86,10 +96,10 @@ export function LoginPage() {
                 required
               />
             </div>
-           
+
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
-                'Signing in...'
+                "Signing in..."
               ) : (
                 <>
                   <LogIn className="w-4 h-4 mr-2" />
@@ -99,23 +109,11 @@ export function LoginPage() {
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link to="/register" className="text-primary hover:underline">
               Sign up
             </Link>
           </div>
-          
-          {/* Demo credentials */}
-          {/*<div className="mt-6 p-4 bg-muted rounded-lg">
-            <p className="text-sm font-medium mb-2">Demo Credentials:</p>
-            <div className="text-xs space-y-1">
-              <p><strong>Student:</strong> student@example.com</p>
-              <p><strong>Club Lead:</strong> lead@example.com</p>
-              <p><strong>Faculty:</strong> faculty@example.com</p>
-              <p className="text-muted-foreground">Password: any</p>
-            </div>
-          </div>
-          */}
         </CardContent>
       </Card>
     </div>

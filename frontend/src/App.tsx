@@ -20,6 +20,10 @@ import { ActivitiesPage } from "@/pages/student/ActivitiesPage";
 // Club Lead Pages
 import { DashboardPage } from "@/pages/club-lead/DashboardPage";
 
+// Admin Pages
+import { DashboardPage as AdminDashboardPage } from "@/pages/admin/DashboardPage";
+import { FacultyManagementPage } from "@/pages/admin/FacultyManagementPage";
+
 // Shared Pages
 import { CalendarPage } from "@/pages/shared/CalendarPage";
 
@@ -74,6 +78,18 @@ const App = () => (
                 </ProtectedRoute>
               }>
                 <Route path="dashboard" element={<div>Faculty Dashboard (Coming Soon)</div>} />
+                <Route path="clubs" element={<div>Club Management (Coming Soon)</div>} />
+                <Route path="analytics" element={<div>Analytics (Coming Soon)</div>} />
+              </Route>
+              
+              {/* Admin Routes */}
+              <Route path="/admin/*" element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }>
+                <Route path="dashboard" element={<AdminDashboardPage />} />
+                <Route path="faculty" element={<FacultyManagementPage />} />
                 <Route path="clubs" element={<div>Club Management (Coming Soon)</div>} />
                 <Route path="analytics" element={<div>Analytics (Coming Soon)</div>} />
               </Route>

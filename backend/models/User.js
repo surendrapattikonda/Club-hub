@@ -13,7 +13,9 @@ const userSchema = new mongoose.Schema({
   },
   regNo: {
     type: String,
-    required: true,
+    required: function () {
+    return this.role === "student";
+    },
     unique: true
   },
   password: {
@@ -23,12 +25,14 @@ const userSchema = new mongoose.Schema({
   year: {
   type: String,
   enum: ['1st', '2nd', '3rd', '4th', 'N/A'],
-  required: true
+  required: function () {
+    return this.role === "student";
+    }
 }
 ,
   role: {
     type: String,
-    enum: ['student', 'faculty', 'clublead', 'admin'], 
+    enum: ['student', 'faculty' ,'clublead', 'admin'], 
     default: 'student'
   },
   clubs: [

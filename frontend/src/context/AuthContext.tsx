@@ -26,18 +26,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string, role: UserRole) => {
-    try {
-      setIsLoading(true);
-      const res = await axios.post(`${API_URL}/login`, { email, password, role });
-      setUser(res.data);
-      localStorage.setItem("user", JSON.stringify(res.data));
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || "Login failed");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const login = async (email: string, password: string) => {
+  try {
+    setIsLoading(true);
+    const res = await axios.post(`${API_URL}/login`, { email, password });
+    
+    // Backend should respond with user details including role
+    // Example: { id, name, email, role, token }
+    setUser(res.data);
+    localStorage.setItem("user", JSON.stringify(res.data));
+
+    return res.data; // so LoginPage can use it
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Login failed");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const register = async (data: RegisterData) => {
     try {
