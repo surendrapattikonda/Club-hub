@@ -20,9 +20,9 @@ const createAdmin = async () => {
 
     await User.create({
       name: "Data science Admin",
-      email: "patthikondasurendra8@gmail.com",
+      email: "admin@example.com",
       regNo: "ADM001",
-      password: "AdminPass123",
+      password: "Admin123",
       role: "admin",
       year: "N/A",
     });

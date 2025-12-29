@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { School, UserPlus } from 'lucide-react';
+import { BookOpen, UserPlus } from 'lucide-react';
 import {
   Select,
   SelectTrigger,
@@ -14,13 +13,14 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 export function RegisterPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    regNo: '',       // 🔹 Registration No
-    year: '',        // 🔹 Year
+    regNo: '',
+    year: '',
     password: '',
     confirmPassword: '',
   });
@@ -33,36 +33,30 @@ export function RegisterPage() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // 🚀 Final form submit (no OTP check)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
       toast({
-        title: 'Registration failed',
-        description: 'Passwords do not match.',
+        title: 'Passwords do not match',
         variant: 'destructive',
       });
       return;
     }
 
     try {
-      console.log('Registering user with data:', formData); // Debugging line
       await register({
         name: formData.name,
         email: formData.email,
         regNo: formData.regNo,
         year: formData.year,
-        password: formData.password, // ✅ Force only student role
+        password: formData.password,
       });
 
-      toast({
-        title: 'Registration successful',
-        description: 'Welcome to ClubHub!',
-      });
-
-      // ✅ Only student flow
+      toast({ title: 'Registration successful', description: 'Welcome to ClubHub!' });
       navigate('/student/clubs');
-    } catch (error) {
+    } catch {
       toast({
         title: 'Registration failed',
         description: 'Please try again.',
@@ -77,16 +71,19 @@ export function RegisterPage() {
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-              <School className="w-8 h-8 text-primary-foreground" />
+              <BookOpen className="h-5 w-5 text-white" />
             </div>
           </div>
           <CardTitle className="text-2xl text-center">Create Student Account</CardTitle>
           <CardDescription className="text-center">
-            Join ClubHub as a student to explore and manage your clubs
+            Register and join ClubHub to explore your clubs!
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Full Name */}
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <Input
@@ -98,6 +95,7 @@ export function RegisterPage() {
               />
             </div>
 
+            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -110,6 +108,7 @@ export function RegisterPage() {
               />
             </div>
 
+            {/* Registration number */}
             <div className="space-y-2">
               <Label htmlFor="regNo">Registration Number</Label>
               <Input
@@ -121,6 +120,7 @@ export function RegisterPage() {
               />
             </div>
 
+            {/* Year */}
             <div className="space-y-2">
               <Label htmlFor="year">Year of Study</Label>
               <Select
@@ -139,6 +139,7 @@ export function RegisterPage() {
               </Select>
             </div>
 
+            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -164,22 +165,21 @@ export function RegisterPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                'Creating account...'
-              ) : (
+              {isLoading ? 'Creating account...' : (
                 <>
                   <UserPlus className="w-4 h-4 mr-2" />
                   Create Account
                 </>
               )}
             </Button>
+
+            <div className="mt-4 text-center text-sm">
+              Already have an account?{' '}
+              <Link to="/login" className="text-primary hover:underline">
+                Sign in
+              </Link>
+            </div>
           </form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
-            <Link to="/login" className="text-primary hover:underline">
-              Sign in
-            </Link>
-          </div>
         </CardContent>
       </Card>
     </div>

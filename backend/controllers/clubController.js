@@ -191,7 +191,7 @@ deleteClub = async (req, res) => {
 // @desc Get clubs related to logged-in user
 // @route GET /api/clubs/my
 // @access Private
-const getMyClubs = async (req, res) => {
+getMyClubs = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -214,6 +214,36 @@ const getMyClubs = async (req, res) => {
   }
 };
 
+// @desc Get all club details (for Faculty/HOD only)
+// @route GET /api/clubs/all/details
+// @access Faculty/HOD
+const getAllClubDetails = async (req, res) => {
+  try {
+    const clubs = await Club.find()
+      .populate("leads", "name email role")
+      .populate("members", "name email role")
+      .populate("pendingMembers", "name email role")
+      .select("name description createdAt updatedAt");
+
+    res.json({
+      totalClubs: clubs.length,
+      clubs,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const getUserByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const user = await User.findOne({ email }).select('name email _id role');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createClub,
   getClubs,
@@ -222,8 +252,9 @@ module.exports = {
   joinClub,
   approveMember,
   assignLead,
-  removeLead
-  ,
-  getMyClubs
+  removeLead,
+  getMyClubs,
+  getAllClubDetails,
+  getUserByEmail,
 };
 

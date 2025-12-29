@@ -6,12 +6,24 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Users, Calendar, Trophy, Plus, ChevronDown, ChevronUp } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+
 import codes from '@/assets/codes.jpg';
 import shield from '../../assets/shield1.png';
 import hydra from '../../assets/hydra1.png';
 import vedic from '../../assets/vedic1.png';
 import yuga from '../../assets/yuga1.png';
 import arts from '../../assets/arts1.png';
+import qrImage from '@/assets/image.jpg';
+import { useAuth } from '@/context/AuthContext';
+
 const mockClubs = [
   {
     id: '1',
@@ -38,9 +50,8 @@ const mockClubs = [
     members: 74,
     activities: 0,
     status: 'active',
-    image: hydra }
-    ,
-
+    image: hydra
+  },
   {
     id: '3',
     name: 'YUGA SPARK - THE HACKATHON CLUB',
@@ -54,7 +65,7 @@ const mockClubs = [
     status: 'active',
     image: yuga
   },
-    {
+  {
     id: '4',
     name: 'SHIELD PREP - THE INTERVIEW PREPARATION CLUBs',
     description: `SHIELD PREP Club empowers students to bridge the gap between academics and industry needs through strategic learning and practical exposure. 
@@ -66,8 +77,7 @@ const mockClubs = [
     activities: 0,
     status: 'active',
     image: shield
-   },
-  
+  },
   {
     id: '5',
     name: 'Vedic Vox - Ideas Presentation Club',
@@ -110,36 +120,48 @@ const mockClubs = [
 ];
 
 export function BrowseClubsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
-  const [joinedClubs, setJoinedClubs] = useState<string[]>([]);
-  const [expandedClubs, setExpandedClubs] = useState<string[]>([]);
+  const { user } = useAuth();
   const { toast } = useToast();
 
-  const filteredClubs = mockClubs.filter(club => {
-    const matchesSearch = club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         club.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [pendingClubs, setPendingClubs] = useState<string[]>([]);
+  const [expandedClubs, setExpandedClubs] = useState<string[]>([]);
+  const [openClubId, setOpenClubId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    roll: '',
+    year: '',
+    email: '',
+    regNo: '',
+    transactionId: ''
+  });
+
+  const filteredClubs = mockClubs.filter((club) => {
+    const matchesSearch =
+      club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      club.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || club.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
-  const handleJoinClub = (clubId: string, clubName: string) => {
-    setJoinedClubs(prev => [...prev, clubId]);
+  const handleFormSubmit = (clubId: string, clubName: string) => {
+    setPendingClubs((prev) => [...prev, clubId]);
+    setOpenClubId(null);
     toast({
-      title: 'Join request sent',
-      description: `Your request to join ${clubName} has been submitted for approval.`,
+      title: 'Request Submitted',
+      description: `Your request to join ${clubName} is pending approval.`,
     });
+    setFormData({ name: '', roll: '', year: '', email: '', regNo: '', transactionId: '' });
   };
 
   const toggleExpanded = (clubId: string) => {
-    setExpandedClubs(prev => 
-      prev.includes(clubId) 
-        ? prev.filter(id => id !== clubId)
-        : [...prev, clubId]
+    setExpandedClubs((prev) =>
+      prev.includes(clubId) ? prev.filter((id) => id !== clubId) : [...prev, clubId]
     );
   };
 
-  const categories = ['all', ...Array.from(new Set(mockClubs.map(club => club.category)))];
+  const categories = ['all', ...Array.from(new Set(mockClubs.map((club) => club.category)))];
 
   return (
     <div className="space-y-6">
@@ -216,11 +238,15 @@ export function BrowseClubsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredClubs.map((club) => {
           const isExpanded = expandedClubs.includes(club.id);
+          const isPending = pendingClubs.includes(club.id);
           const shouldShowToggle = club.description.length > 150;
-          
+
           return (
             <Card key={club.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video bg-cover bg-center" style={{ backgroundImage: `url(${club.image})` }} />
+              <div
+                className="aspect-video bg-cover bg-center"
+                style={{ backgroundImage: `url(${club.image})` }}
+              />
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
@@ -231,7 +257,7 @@ export function BrowseClubsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <CardDescription className={isExpanded ? "" : "line-clamp-3"}>
+                  <CardDescription className={isExpanded ? '' : 'line-clamp-3'}>
                     {club.description}
                   </CardDescription>
                   {shouldShowToggle && (
@@ -243,13 +269,11 @@ export function BrowseClubsPage() {
                     >
                       {isExpanded ? (
                         <>
-                          <ChevronUp className="w-3 h-3 mr-1" />
-                          Show less
+                          <ChevronUp className="w-3 h-3 mr-1" /> Show less
                         </>
                       ) : (
                         <>
-                          <ChevronDown className="w-3 h-3 mr-1" />
-                          Read more
+                          <ChevronDown className="w-3 h-3 mr-1" /> Read more
                         </>
                       )}
                     </Button>
@@ -267,32 +291,136 @@ export function BrowseClubsPage() {
                     <span>{club.activities} activities</span>
                   </div>
                 </div>
-                <Button 
-                  className="w-full" 
-                  onClick={() => handleJoinClub(club.id, club.name)}
-                  disabled={joinedClubs.includes(club.id)}
-                  variant={joinedClubs.includes(club.id) ? "secondary" : "default"}
-                >
-                  {joinedClubs.includes(club.id) ? (
-                    'Request Sent'
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Join Club
-                    </>
-                  )}
-                </Button>
+
+                {/* JOIN BUTTON & DIALOG */}
+                {!isPending ? (
+                  <Dialog
+                    open={openClubId === club.id}
+                    onOpenChange={(open) => {
+                      if (open) {
+                        if (!user) {
+                          toast({
+                            title: 'Login Required',
+                            description: 'Please log in before joining a club.',
+                            variant: 'destructive',
+                          });
+                          return;
+                        }
+                        setFormData({
+                          name: user?.name || '',
+                          roll: user?.roll || '',
+                          year: user?.year || '',
+                          email: user?.email || '',
+                          regNo: user?.regNo || '',
+                          transactionId: '',
+                        });
+                      }
+                      setOpenClubId(open ? club.id : null);
+                    }}
+                  >
+                    <DialogTrigger asChild>
+                      <Button className="w-full">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Join Club
+                      </Button>
+                    </DialogTrigger>
+
+                    <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+                      
+  <DialogHeader>
+    <DialogTitle>Join {club.name}</DialogTitle>
+  </DialogHeader>
+
+  <div className="space-y-3">
+    {/* Info message */}
+    <p className="text-sm text-muted-foreground mb-2">
+      The following details are automatically filled from your profile.
+    </p>
+
+    {/* Name (read-only) */}
+    <div>
+      <Label>Name</Label>
+      <Input
+        value={formData.name}
+        readOnly
+        className="bg-muted cursor-not-allowed"
+      />
+    </div>
+
+    {/* Roll (read-only) */}
+    <div>
+      <Label>Roll Number</Label>
+      <Input
+        value={formData.regNo}
+        readOnly
+        className="bg-muted cursor-not-allowed"
+      />
+    </div>
+
+    {/* Year (read-only) */}
+    <div>
+      <Label>Year</Label>
+      <Input
+        value={formData.year}
+        readOnly
+        className="bg-muted cursor-not-allowed"
+      />
+    </div>
+
+    {/* Email (read-only) */}
+    <div>
+      <Label>Email</Label>
+      <Input
+        value={formData.email}
+        readOnly
+        className="bg-muted cursor-not-allowed"
+      />
+    </div>
+
+    {/* QR Code */}
+    <div className="text-center mt-3">
+      <p className="text-sm font-medium mb-2">Scan the QR and pay 150</p>
+      <img
+        src={qrImage}
+        alt="QR Code"
+        className="w-40 h-40 mx-auto rounded-lg border-2 border-border shadow-sm"
+      />
+    </div>
+
+    {/* Transaction ID */}
+    <div>
+      <Label>Transaction ID</Label>
+      <Input
+        value={formData.transactionId}
+        onChange={(e) =>
+          setFormData({ ...formData, transactionId: e.target.value })
+        }
+        placeholder="Enter transaction ID"
+      />
+    </div>
+
+    {/* Submit */}
+    <Button
+      className="w-full mt-4"
+      onClick={() => handleFormSubmit(club.id, club.name)}
+      disabled={!formData.transactionId}
+    >
+      Submit Request
+    </Button>
+  </div>
+</DialogContent>
+
+                  </Dialog>
+                ) : (
+                  <Button className="w-full" variant="secondary" disabled>
+                    Pending for Approval
+                  </Button>
+                )}
               </CardContent>
             </Card>
           );
         })}
       </div>
-
-      {filteredClubs.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No clubs found matching your criteria.</p>
-        </div>
-      )}
     </div>
   );
 }

@@ -38,6 +38,7 @@ export function FacultyManagementPage() {
   const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [error,setError]=useState<string | null>(null);
   const { toast } = useToast();
 
   const [newFaculty, setNewFaculty] = useState({
@@ -53,13 +54,18 @@ export function FacultyManagementPage() {
  useEffect(() => {
   const fetchFaculty = async () => {
     try {
-      const token = localStorage.getItem("token"); // or whatever key you store it in
-      const res = await axios.get("http://localhost:5000/api/admin/faculty", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setFaculty(res.data);
+       const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const token = user?.token;
+      
+        if (!token) {
+          setError("User not logged in or token missing");
+          setLoading(false);
+          return;
+        } // or whatever key you store it in
+      const res = await axios.get("http://localhost:5000/api/admin/faculty", { headers: { Authorization: `Bearer ${token}` } });
+const formatted = res.data.map((f: any) => ({ ...f, id: f._id }));
+setFaculty(formatted);
+
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -213,6 +219,19 @@ export function FacultyManagementPage() {
               </div>
 
               <div>
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={newFaculty.phone}
+                  onChange={(e) =>
+                    setNewFaculty((prev) => ({ ...prev, phone: e.target.value }))
+                  }
+                  required
+                />
+              </div>
+
+              <div>
                 <Label htmlFor="role">Role</Label>
                 <select
                   id="role"
@@ -220,7 +239,7 @@ export function FacultyManagementPage() {
                   onChange={(e) =>
                     setNewFaculty((prev) => ({ ...prev, role: e.target.value }))
                   }
-                  className="w-full border rounded p-2"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   <option value="faculty">Faculty</option>
                   <option value="hod">HOD</option>

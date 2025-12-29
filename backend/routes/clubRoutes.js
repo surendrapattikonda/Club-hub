@@ -10,7 +10,9 @@ const {
   approveMember,
   assignLead,
   removeLead,
-  getMyClubs, // added
+  getMyClubs,
+  getAllClubDetails,
+  getUserByEmail,
 } = require("../controllers/clubController");
 
 const router = express.Router();
@@ -28,9 +30,20 @@ router.post("/", protect, authorize("faculty", "hod"), createClub);
 router.delete("/:id", protect, authorize("faculty", "hod"), deleteClub);
 router.put("/:id/assign-lead/:userId", protect, authorize("faculty", "hod"), assignLead);
 router.put("/:id/remove-lead/:userId", protect, authorize("faculty", "hod"), removeLead);
+// ================= Faculty / HOD ==================
+router.get(
+  "/all/details",
+  protect,
+  authorize("faculty", "hod"),
+  getAllClubDetails
+);
+// Add this route to your clubRoutes.js
+router.get('/user/email/:email', protect, getUserByEmail);
+
 
 // ================= Leads ==================
 router.put("/:id/approve/:userId", protect, authorize("lead"), approveMember);
+
 
 // ================= Students ==================
 router.post("/:id/join", protect, authorize("student"), joinClub);

@@ -1,62 +1,75 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User, UserRole, AuthContextType, RegisterData } from "@/types/auth";
 import axios from "axios";
+import { User, AuthContextType, RegisterData } from "@/types/auth";
 
-const API_URL = "http://localhost:5000/api/auth"; // backend base URL
+const API_URL = "http://localhost:5000/api/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
+  // NEW IMPORTANT STATE
+  const [authLoading, setAuthLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(false);  
+
+  // Load user from localStorage ONCE
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+
+    if (storedUser && storedUser !== "undefined") {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+
+        if (parsedUser?.token) {
+          axios.defaults.headers.common["Authorization"] = `Bearer ${parsedUser.token}`;
+        }
+      } catch (error) {
+        console.error("Invalid user in localStorage");
+        localStorage.removeItem("user");
+      }
     }
-    setIsLoading(false);
+
+    setAuthLoading(false); // Wait before rendering routes
   }, []);
 
+  // LOGIN
   const login = async (email: string, password: string) => {
-  try {
     setIsLoading(true);
-    const res = await axios.post(`${API_URL}/login`, { email, password });
-    
-    // Backend should respond with user details including role
-    // Example: { id, name, email, role, token }
-    setUser(res.data);
-    localStorage.setItem("user", JSON.stringify(res.data));
 
-    return res.data; // so LoginPage can use it
-  } catch (error: any) {
-    throw new Error(error.response?.data?.message || "Login failed");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-  const register = async (data: RegisterData) => {
     try {
-      setIsLoading(true);
-     // const res =  await axios.post(`${API_URL}/signup`, data);
-     const res = await axios.post(
-  `${API_URL}/signup`,
-  data,
-  { headers: { "Content-Type": "application/json" } }
-);
- 
-     setUser(res.data);
+      const res = await axios.post(`${API_URL}/login`, { email, password });
+
+      setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+
+      return res.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Login failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // REGISTER
+  const register = async (data: RegisterData) => {
+    setIsLoading(true);
+    try {
+      const res = await axios.post(`${API_URL}/signup`, data);
+
+      setUser(res.data);
+      localStorage.setItem("user", JSON.stringify(res.data));
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || "Register failed");
     } finally {
@@ -64,14 +77,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // LOGOUT
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    delete axios.defaults.headers.common["Authorization"];
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>
-      {children}
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        isLoading,
+        authLoading,   // EXPOSE NEW STATE
+      }}
+    >
+      {!authLoading && children} {/* WAIT before rendering app */}
     </AuthContext.Provider>
   );
 };

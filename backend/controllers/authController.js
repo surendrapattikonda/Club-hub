@@ -14,7 +14,6 @@ module.exports = generateToken;
 // @desc Signup (Students Only)
 const signup = async (req, res) => {
   try {
-    console.log('Signup request body:', req.body); // Debugging line
     const { name, email, regNo, password, year} = req.body;
 
     if (!name || !email || !password || !regNo || !year) {

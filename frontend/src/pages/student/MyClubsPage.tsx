@@ -1,34 +1,44 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, Users, Activity, MessageSquare, ExternalLink } from 'lucide-react';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 export function MyClubsPage() {
   const [myClubs, setMyClubs] = useState<any[]>([]);
   const [pendingApplications, setPendingApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate=useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchClubs = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const res = await fetch("http://localhost:5000/api/clubs/my-clubs", {
-          credentials: "include", // if using cookies/JWT
+        // ✅ Get token from localStorage's user object
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const token = user?.token;
+
+        if (!token) {
+          setError("User not logged in or token missing");
+          setLoading(false);
+          return;
+        }
+
+        const res = await axios.get("http://localhost:5000/api/clubs/my", {
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // if using JWT in localStorage
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        const data = await res.json();
-
-        // Assuming your API returns something like:
-        // { myClubs: [...], pendingApplications: [...] }
-        setMyClubs(data.myClubs || []);
-        setPendingApplications(data.pendingApplications || []);
-      } catch (err) {
-        console.error("Error fetching clubs:", err);
+        setMyClubs(res.data.myClubs || []);
+        setPendingApplications(res.data.pendingApplications || []);
+      } catch (err: any) {
+        console.error("Error fetching clubs:", err.response?.data || err);
+        setError(err.response?.data?.message || "Failed to fetch clubs");
       } finally {
         setLoading(false);
       }
@@ -37,9 +47,8 @@ export function MyClubsPage() {
     fetchClubs();
   }, []);
 
-  if (loading) {
-    return <p>Loading clubs...</p>;
-  }
+  if (loading) return <p>Loading clubs...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="space-y-6">
@@ -50,25 +59,22 @@ export function MyClubsPage() {
         </p>
       </div>
 
-      {/* Pending Applications */}
       {pendingApplications.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Pending Applications</h2>
           <div className="grid gap-4">
             {pendingApplications.map((app) => (
               <Card key={app.id} className="border-warning/50 bg-warning/5">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium">{app.name}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Applied on {new Date(app.appliedDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <Badge variant="secondary" className="bg-warning/20 text-warning-foreground">
-                      Pending Approval
-                    </Badge>
+                <CardContent className="p-4 flex justify-between items-center">
+                  <div>
+                    <h3 className="font-medium">{app.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Applied on {new Date(app.appliedDate).toLocaleDateString()}
+                    </p>
                   </div>
+                  <Badge variant="secondary" className="bg-warning/20 text-warning-foreground">
+                    Pending Approval
+                  </Badge>
                 </CardContent>
               </Card>
             ))}
@@ -76,7 +82,6 @@ export function MyClubsPage() {
         </div>
       )}
 
-      {/* Active Clubs */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Active Memberships</h2>
         <div className="grid gap-6">
@@ -103,7 +108,6 @@ export function MyClubsPage() {
                 <p className="text-sm text-muted-foreground">{club.description}</p>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Next Event */}
                 {club.nextEvent && (
                   <div className="bg-accent/50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
@@ -118,45 +122,25 @@ export function MyClubsPage() {
                     </div>
                   </div>
                 )}
-
-                {/* Stats */}
                 {club.stats && (
                   <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                        <Users className="w-4 h-4" />
-                      </div>
+                      <Users className="w-4 h-4 text-muted-foreground mx-auto mb-1" />
                       <p className="text-2xl font-bold">{club.stats.members}</p>
                       <p className="text-xs text-muted-foreground">Members</p>
                     </div>
                     <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                        <Activity className="w-4 h-4" />
-                      </div>
+                      <Activity className="w-4 h-4 text-muted-foreground mx-auto mb-1" />
                       <p className="text-2xl font-bold">{club.stats.activities}</p>
                       <p className="text-xs text-muted-foreground">Activities</p>
                     </div>
                     <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                        <MessageSquare className="w-4 h-4" />
-                      </div>
+                      <MessageSquare className="w-4 h-4 text-muted-foreground mx-auto mb-1" />
                       <p className="text-2xl font-bold">{club.stats.attendance}%</p>
                       <p className="text-xs text-muted-foreground">Attendance</p>
                     </div>
                   </div>
                 )}
-
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    View Calendar
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Club Chat
-                  </Button>
-                </div>
               </CardContent>
             </Card>
           ))}
@@ -166,9 +150,7 @@ export function MyClubsPage() {
       {myClubs.length === 0 && pendingApplications.length === 0 && (
         <div className="text-center py-12">
           <p className="text-muted-foreground mb-4">You haven't joined any clubs yet.</p>
-          <Button onClick={()=>{navigate(
-'/student/clubs'
-          )}}>Browse Clubs</Button>
+          <Button onClick={() => navigate('/student/clubs')}>Browse Clubs</Button>
         </div>
       )}
     </div>

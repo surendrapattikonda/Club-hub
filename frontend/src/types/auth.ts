@@ -8,8 +8,11 @@ export interface User {
   role: UserRole;
   avatar?: string;
   department?: string;
-  club?: string; // For club leads
+  club?: string;
+  regNo?: string;   // ← Add this
+  year?: string;    // ← And this
 }
+
 
 export interface AuthContextType {
   user: User | null;

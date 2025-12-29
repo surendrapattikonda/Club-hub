@@ -1,18 +1,57 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   Users, 
   Calendar, 
   TrendingUp, 
   UserCheck,
-  Clock,
   AlertCircle,
   Plus,
-  Activity
+  Activity,
+  Mail,
+  Building2
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useAuth } from '@/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+const handleNewActivity = () => {
+  alert('Activity page coming soon!');
+}
+
+// Mock club data
+const clubData = {
+  id: '1',
+  name: 'Coding Club',
+  logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=codingclub',
+  description: 'A community for coding enthusiasts',
+  department: 'Computer Science',
+  totalMembers: 156,
+  leads: [
+    {
+      id: '2',
+      name: 'Sarah Johnson',
+      email: 'sarah.johnson@example.com',
+      department: 'Computer Science',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah'
+    },
+    {
+      id: '5',
+      name: 'Mike Chen',
+      email: 'mike.chen@example.com',
+      department: 'Computer Science',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mike'
+    },
+    {
+      id: '6',
+      name: 'Emily Davis',
+      email: 'emily.davis@example.com',
+      department: 'Information Technology',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=emily'
+    }
+  ]
+};
 
 const monthlyData = [
   { month: 'Jan', activities: 4, attendance: 85 },
@@ -54,18 +93,88 @@ const pendingRequests = [
 ];
 
 export function DashboardPage() {
+  const { user } = useAuth();
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Club Lead Dashboard</h1>
-          <p className="text-muted-foreground">Coding Club Management Overview</p>
-        </div>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          New Activity
-        </Button>
-      </div>
+      {/* Club Header with Logo and Info */}
+      <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+            <Avatar className="w-24 h-24 border-4 border-background shadow-lg">
+              <AvatarImage src={clubData.logo} alt={clubData.name} />
+              <AvatarFallback>{clubData.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold mb-2">{clubData.name}</h1>
+              <p className="text-muted-foreground mb-3">{clubData.description}</p>
+              <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-muted-foreground" />
+                  <span>{clubData.department}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-muted-foreground" />
+                  <span>{clubData.totalMembers} Members</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <UserCheck className="w-4 h-4 text-muted-foreground" />
+                  <span>{clubData.leads.length} Club Leads</span>
+                </div>
+              </div>
+            </div>
+            <Button onClick={handleNewActivity}>
+              <Plus className="w-4 h-4 mr-2" />
+              New Activity
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Club Leads Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <UserCheck className="w-5 h-5" />
+            Club Leadership Team
+          </CardTitle>
+          <CardDescription>All club leads managing {clubData.name} (Max 4 leads)</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {clubData.leads.map((lead) => (
+              <div key={lead.id} className={`flex items-center gap-4 p-4 rounded-lg border ${user?.id === lead.id ? 'bg-primary/5 border-primary' : 'bg-card'}`}>
+                <Avatar className="w-12 h-12">
+                  <AvatarImage src={lead.avatar} alt={lead.name} />
+                  <AvatarFallback>{lead.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium">{lead.name}</p>
+                    {user?.id === lead.id && (
+                      <Badge variant="secondary" className="text-xs">You</Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <Mail className="w-3 h-3" />
+                    <span>{lead.email}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{lead.department}</p>
+                </div>
+              </div>
+            ))}
+            {clubData.leads.length < 4 && (
+              <div className="flex items-center justify-center p-4 rounded-lg border border-dashed border-muted-foreground/50 text-muted-foreground">
+                <div className="text-center">
+                  <UserCheck className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Available Lead Position</p>
+                  <p className="text-xs">Contact faculty to assign</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
