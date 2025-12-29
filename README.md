@@ -22,6 +22,7 @@ This platform replaces manual workflows with a **centralized, role-based system*
 - [Future Enhancements](#-future-enhancements)
 - [About Me](#-about-me)
 
+--- 
 
 ## 📖 Overview
 
@@ -77,6 +78,7 @@ Remaining modules are under active development and will be released incrementall
 - Analytics & insights
 
 
+---
 ## ❗ Problem Statement
 
 Traditional club management systems rely heavily on:
@@ -172,6 +174,7 @@ This platform offers:
 #### **Code Editor**
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" width="40" height="40" title="VSCode" />
 
+---
 
 ## 📦 Installation
 
@@ -228,8 +231,7 @@ VITE_API_URL=http://localhost:5000/api
 ```
 
 
-
-
+---
 
 ## 🚀 Demo Access
 
@@ -251,6 +253,8 @@ Each role auto-fills valid credentials instantly — **no manual typing required
 1. **As a Student**: Register → Browse Clubs → Request to Join → View Activities
 2. **As a Club Lead**: Login → Approve Members → Create Activities → Mark Attendance
 3. **As Faculty**: Login → View All Clubs → Analyze Metrics → Manage Leadership
+
+---
 
 ## 🗄️ Database Schema
 
@@ -372,7 +376,7 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-
+---
 ## 🔮 Future Enhancements
 
 - [ ] Mobile application (React Native)
@@ -382,6 +386,7 @@ Contributions are welcome! Please follow these steps:
 - [ ] Integration with institutional calendar systems
 - [ ] Real-time chat for club members
 
+---
 
 ## 🙋‍♂️ About Me  
 Hi, I’m **Pattikonda Surendra** 👋  
