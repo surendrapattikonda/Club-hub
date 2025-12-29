@@ -5,20 +5,23 @@ This platform replaces manual workflows with a **centralized, role-based system*
 
 ---
 
-## Table of Contents
+## 📑 Table of Contents
 
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [User Roles](#user-roles)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Database Schema](#database-schema)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+- [Overview](#-overview)
+- [Feature Implementation Status](#-feature-implementation-status)
+- [Problem Statement](#-problem-statement)
+- [Solution](#-solution)
+- [Key Features](#-key-features)
+- [User Roles](#-user-roles)
+- [Tech Stack](#-tech-stack)
+- [Installation](#-installation)
+- [Demo Access](#-demo-access)
+- [Database Schema](#-database-schema)
+- [Project Structure](#-project-structure)
+- [Contributing](#-contributing)
+- [Future Enhancements](#-future-enhancements)
+- [About Me](#-about-me)
+
 
 ## 📖 Overview
 
@@ -177,7 +180,7 @@ This platform offers:
 # List your prerequisites
 Node.js (v20 or higher)
 npm 
-PostgreSQL (v12 or higher)
+MongoDB  (v5 or higher)
 Git
 ```
 
@@ -212,14 +215,16 @@ Create a `.env` file in both frontend and backend directories:
 
 **Backend `.env`:**
 ```
-DATABASE_URL=your_database_url
+MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 PORT=5000
+
 ```
 
 **Frontend `.env`:**
 ```
-REACT_APP_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:5000/api
+
 ```
 
 
@@ -247,10 +252,10 @@ Each role auto-fills valid credentials instantly — **no manual typing required
 2. **As a Club Lead**: Login → Approve Members → Create Activities → Mark Attendance
 3. **As Faculty**: Login → View All Clubs → Analyze Metrics → Manage Leadership
 
-
 ## 🗄️ Database Schema
 
-### Entity Relationship Diagram
+<details>
+<summary><strong>Click to expand Database Schema</strong></summary>
 
 ```
 ┌─────────────────┐         ┌──────────────────┐         ┌─────────────────┐
@@ -285,6 +290,9 @@ Each role auto-fills valid credentials instantly — **no manual typing required
                               │ updatedAt      │
                               └────────────────┘
 ```
+</details>
+
+---
 
 ## 📁 Project Structure
 
@@ -351,8 +359,7 @@ CLUB-HUB/
 ```
 </details>
 
-
-
+---
 
 
 ## 🤝 Contributing
