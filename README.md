@@ -16,11 +16,11 @@ This platform replaces manual workflows with a **centralized, role-based system*
 - [Tech Stack](#-tech-stack)
 - [Installation](#-installation)
 - [Demo Access](#-demo-access)
-- [Database Schema](#-database-schema)
+- [Database Schema](#database-schema)
 - [Project Structure](#-project-structure)
 - [Contributing](#-contributing)
 - [Future Enhancements](#-future-enhancements)
-- [About Me](#-about-me)
+- [About Me](#about-me)
 
 --- 
 
