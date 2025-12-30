@@ -136,6 +136,8 @@ This platform offers:
 | **Faculty/HOD** | Oversee all clubs, manage leads, view analytics | Administrative access to entire system |
 
 
+---
+
 ## 🛠 Tech Stack  
 
 #### **Frontend**  
