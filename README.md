@@ -256,7 +256,7 @@ Each role auto-fills valid credentials instantly — **no manual typing required
 
 ---
 
-## 🗄️ Database Schema
+## 🗄️ Database Schema <a id="database-schema"></a>
 
 <details>
 <summary><strong>Click to expand Database Schema</strong></summary>
@@ -388,7 +388,7 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 🙋‍♂️ About Me  
+## 🙋‍♂️ About Me <a id="about-me"></a>
 Hi, I’m **Pattikonda Surendra** 👋  
 
 🚀 BTech CSE (Data Science) | Full Stack & ML Enthusiast  
