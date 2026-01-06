@@ -1,6 +1,6 @@
 const Club = require("../models/Club");
 const User = require("../models/User");
-
+const generateToken = require("./authController");
 // @desc Create a new club
 // @route POST /api/clubs
 // @access Admin (or Superuser)

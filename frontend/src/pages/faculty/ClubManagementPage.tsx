@@ -135,9 +135,6 @@ export function ClubManagementPage() {
     
     if (role === 'faculty' || role === 'hod') {
       fetchAllClubs();
-    } else {
-      fetchMyClubs();
-      setLoading(false);
     }
   }, []);
 
@@ -296,7 +293,7 @@ export function ClubManagementPage() {
     // Change this line in handleAssignLead function:
 const userRes = await axios.get(`http://localhost:5000/api/clubs/user/email/${assignLeadEmail}`, { headers });
       const userId = userRes.data.user._id;
-
+      console.log('User ID to assign as lead:', userId);
       // Then assign as lead
       const res = await axios.put(
         `http://localhost:5000/api/clubs/${clubId}/assign-lead/${userId}`,

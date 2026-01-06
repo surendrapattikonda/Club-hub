@@ -21,7 +21,7 @@ const demoUsers = {
     password: "12345",
   },
   clublead: {
-    email: "student1@example.com",
+    email: "student@example.com",
     password: "12345",
   },
   faculty: {

@@ -8,6 +8,7 @@ const createAdmin = async () => {
   try {
     //  Wait for DB connection
     await mongoose.connect(process.env.atlas_URI, {
+      dbName: "club_db",
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -26,8 +27,8 @@ const createAdmin = async () => {
       role: "admin",
       year: "N/A",
     });
-
     console.log(" Admin created successfully");
+    
     process.exit(0);
   } catch (error) {
     console.error("Error creating admin:", error.message);
