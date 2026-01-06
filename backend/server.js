@@ -12,7 +12,8 @@ connectDB();
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:8080",
+  origin: ["http://localhost:8080",
+           "https://club-hub-ds.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
