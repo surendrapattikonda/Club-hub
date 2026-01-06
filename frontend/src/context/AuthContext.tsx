@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import api from "@/services/api";
 import { User, AuthContextType, RegisterData } from "@/types/auth";
-
-const API_URL = "http://localhost:5000/api/auth";
+const API_URL ="/api/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -45,12 +44,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
 
     try {
-      const res = await axios.post(`${API_URL}/login`, { email, password });
+      const res = await api.post(`${API_URL}/login`, { email, password });
 
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
 
       return res.data;
     } catch (error: any) {
@@ -64,12 +63,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (data: RegisterData) => {
     setIsLoading(true);
     try {
-      const res = await axios.post(`${API_URL}/signup`, data);
+      const res = await api.post(`${API_URL}/signup`, data);
 
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || "Register failed");
     } finally {
@@ -81,7 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    delete axios.defaults.headers.common["Authorization"];
+    delete api.defaults.headers.common["Authorization"];
   };
 
   return (

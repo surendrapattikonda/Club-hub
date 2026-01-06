@@ -28,7 +28,7 @@ export function MyClubsPage() {
           return;
         }
 
-        const res = await axios.get("http://localhost:5000/api/clubs/my", {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/clubs/my`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

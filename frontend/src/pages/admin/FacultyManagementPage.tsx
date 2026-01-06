@@ -62,10 +62,9 @@ export function FacultyManagementPage() {
           setLoading(false);
           return;
         } // or whatever key you store it in
-      const res = await axios.get("http://localhost:5000/api/admin/faculty", { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/faculty`, { headers: { Authorization: `Bearer ${token}` } });
 const formatted = res.data.map((f: any) => ({ ...f, id: f._id }));
 setFaculty(formatted);
-
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -100,7 +99,7 @@ setFaculty(formatted);
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/admin/create-user",
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/create-user`,
         newFaculty
       );
 
@@ -133,7 +132,7 @@ setFaculty(formatted);
   const toggleFacultyStatus = async (id: string, currentStatus: string) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/faculty/${id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/faculty/${id}`,
         { status: currentStatus === "active" ? "inactive" : "active" }
       );
       setFaculty((prev) =>
@@ -152,7 +151,7 @@ setFaculty(formatted);
   // ✅ Delete Faculty/HOD
   const deleteFaculty = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin/delete-user/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/admin/delete-user/${id}`);
       setFaculty((prev) => prev.filter((f) => f.id !== id));
       toast({
         title: "Success",

@@ -27,23 +27,23 @@ import {
 import { useToast } from '@/hooks/use-toast';
 
 // =====================
-// Mock Data
+// Mock Data (UPDATED)
 // =====================
 
 const pendingRequests = [
   {
     id: '1',
-    name: 'Alice Johnson',
-    email: 'alice.johnson@example.com',
+    name: 'Venky',
+    email: 'venky@example.com',
     phone: '9876543200',
     year: '2nd Year',
     appliedDate: '2024-02-12',
-    gender: 'Female'
+    gender: 'Male'
   },
   {
     id: '2',
-    name: 'Bob Smith',
-    email: 'bob.smith@example.com',
+    name: 'Charan',
+    email: 'charan@example.com',
     phone: '9876543212',
     year: '3rd Year',
     appliedDate: '2024-02-11',
@@ -51,20 +51,20 @@ const pendingRequests = [
   },
   {
     id: '3',
-    name: 'Carol Davis',
-    email: 'carol.davis@example.com',
+    name: 'Uday',
+    email: 'uday@example.com',
     phone: '9876543221',
     year: '1st Year',
     appliedDate: '2024-02-10',
-    gender: 'Female'
+    gender: 'Male'
   }
 ];
 
 const activeMembersDefault = [
   {
     id: '4',
-    name: 'David Wilson',
-    email: 'david.wilson@example.com',
+    name: 'Shiva',
+    email: 'shiva@example.com',
     phone: '9876543210',
     year: '3rd Year',
     attendance: 92,
@@ -72,12 +72,12 @@ const activeMembersDefault = [
   },
   {
     id: '5',
-    name: 'Emma Brown',
-    email: 'emma.brown@example.com',
+    name: 'Vijay',
+    email: 'vijay@example.com',
     phone: '9876543222',
     year: '2nd Year',
     attendance: 88,
-    gender: 'Female'
+    gender: 'Male'
   }
 ];
 
@@ -175,13 +175,15 @@ export function ManageMembersPage() {
             <UserPlus className="w-4 h-4" />
             Pending Requests
             {requests.length > 0 && (
-              <Badge variant="destructive" className="ml-2">{requests.length}</Badge>
+              <Badge variant="destructive" className="ml-2">
+                {requests.length}
+              </Badge>
             )}
           </TabsTrigger>
         </TabsList>
 
         {/* ===================== ACTIVE MEMBERS ===================== */}
-        <TabsContent value="members" className="space-y-4 overflow-visible">
+        <TabsContent value="members" className="space-y-4">
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -190,8 +192,7 @@ export function ManageMembersPage() {
                   <CardDescription>All members currently approved</CardDescription>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {/* FIXED: Dark mode select */}
+                <div className="flex gap-3">
                   <select
                     className="border rounded-md px-3 py-2 bg-background text-foreground"
                     value={yearFilter}
@@ -217,7 +218,7 @@ export function ManageMembersPage() {
               </div>
             </CardHeader>
 
-            <CardContent className="overflow-visible">
+            <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -234,10 +235,8 @@ export function ManageMembersPage() {
                   {filteredMembers.map((member) => (
                     <TableRow key={member.id}>
                       <TableCell>
-                        <div>
-                          <p className="font-medium">{member.name}</p>
-                          <p className="text-sm text-muted-foreground">{member.email}</p>
-                        </div>
+                        <p className="font-medium">{member.name}</p>
+                        <p className="text-sm text-muted-foreground">{member.email}</p>
                       </TableCell>
 
                       <TableCell>{member.year}</TableCell>
@@ -245,9 +244,7 @@ export function ManageMembersPage() {
                       <TableCell>{member.phone}</TableCell>
 
                       <TableCell>
-                        <Badge variant="secondary" className="px-3 py-1">
-                          Coming Soon
-                        </Badge>
+                        <Badge variant="secondary">Coming Soon</Badge>
                       </TableCell>
 
                       <TableCell className="text-right">
@@ -264,13 +261,12 @@ export function ManageMembersPage() {
                   ))}
                 </TableBody>
               </Table>
-
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* ===================== PENDING REQUESTS ===================== */}
-        <TabsContent value="requests" className="space-y-4 overflow-visible">
+        <TabsContent value="requests" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -280,66 +276,53 @@ export function ManageMembersPage() {
               <CardDescription>Review applications and approve members</CardDescription>
             </CardHeader>
 
-            <CardContent className="overflow-visible">
+            <CardContent>
               {requests.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <UserCheck className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p>No pending requests</p>
                 </div>
               ) : (
-                <div className="space-y-4 overflow-visible">
-
+                <div className="space-y-4">
                   {requests.map((req) => (
                     <Card key={req.id}>
-                      <CardContent className="p-6 overflow-visible">
-                        <div className="flex items-start gap-4">
-
-                          {/* Avatar removed */}
-
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between mb-2">
-                              <div>
-                                <h3 className="font-semibold text-lg">{req.name}</h3>
-
-                                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                                  <span className="flex items-center gap-1">
-                                    <Mail className="w-3 h-3" />
-                                    {req.email}
-                                  </span>
-                                  <span>{req.year}</span>
-                                  <span>{req.gender}</span>
-                                </div>
-                              </div>
-
-                              <Badge variant="outline" className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {new Date(req.appliedDate).toLocaleDateString()}
-                              </Badge>
+                      <CardContent className="p-6">
+                        <div className="flex justify-between">
+                          <div>
+                            <h3 className="font-semibold text-lg">{req.name}</h3>
+                            <div className="flex gap-4 text-sm text-muted-foreground mt-1">
+                              <span className="flex items-center gap-1">
+                                <Mail className="w-3 h-3" />
+                                {req.email}
+                              </span>
+                              <span>{req.year}</span>
+                              <span>{req.gender}</span>
                             </div>
-
-                            <div className="flex gap-2">
-                              <Button onClick={() => handleApprove(req.id, req.name)} size="sm">
-                                <CheckCircle className="w-4 h-4 mr-1" />
-                                Approve
-                              </Button>
-
-                              <Button
-                                onClick={() => handleReject(req.id, req.name)}
-                                variant="outline"
-                                size="sm"
-                              >
-                                <XCircle className="w-4 h-4 mr-1" />
-                                Reject
-                              </Button>
-                            </div>
-
                           </div>
 
+                          <Badge variant="outline">
+                            <Clock className="w-3 h-3 mr-1 inline" />
+                            {new Date(req.appliedDate).toLocaleDateString()}
+                          </Badge>
+                        </div>
+
+                        <div className="flex gap-2 mt-4">
+                          <Button size="sm" onClick={() => handleApprove(req.id, req.name)}>
+                            <CheckCircle className="w-4 h-4 mr-1" />
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleReject(req.id, req.name)}
+                          >
+                            <XCircle className="w-4 h-4 mr-1" />
+                            Reject
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
                   ))}
-
                 </div>
               )}
             </CardContent>
